@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Join | ChatApp</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <!--
+        Viewport tags let you specify certain things about how your site should
+        be rendered.
+        This view port tag is going to make our website display much better in
+        mobile. Instead of being really zoomed out. Its going to fit to the 
+        width of your phone tablet on any other device.
+        <meta name="viewport" after that we can add a few options about what we
+        want to do that viewport.
+        All this is going to happened inside of content="
+        And its going to be a comma separated list of key value pairs 
+        one for example is width we're going to set it equal to device-width,
+        And this tells your browser to use the devices width as the web pages 
+        width.
+        Then we can add a comma and specify our next key value pair.
+        We will set initial-scale=1.0 
+        This is going to scale the site appropriately so it doesn't look all
+        zoomed out.
+        And finaly add a comma and specify the final key value pair.
+        user-scalable=no
+        We have styles in place to make the text bigger and to make sure that 
+        the user can always see everything. So there is no reason to give users
+        the ability to scale.
+        -->
+        <link rel="stylesheet" href="/css/style.css">
+    </head>
+    <body class="centered-form">
+        
+        <div class="centered-form__form">
+            
+            <form action='/chat.html'>
+                <div class="form-field">
+                    <h3>Join a Chat</h3>
+                </div>
+
+                <div class="form-field">
+                    <label>Display Name</label>
+                    <input type="text" name='name' autofocus/>
+                </div>
+
+                <div class="form-field">
+                    <label>Room Name</label>
+                    <input type='text' name="room" />
+                </div>
+
+                <div class="form-field">
+                    <button>Join</button>
+                </div>
+            </form>
+            
+        </div>
+        
+    </body>
+    
+
+    
+    
+</html>
+
+

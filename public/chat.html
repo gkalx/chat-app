@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Chat | ChatApp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="chat">
+
+  <div class="chat__sidebar">
+    <h3>People</h3>
+    <div id="users"></div>
+  </div>
+
+  <div class="chat__main">
+    <ol id="messages" class="chat__messages"></ol>
+
+    <div class="chat__footer">
+      <form id="message-form">
+
+
+
+    
+        <form id="message-form">
+            <!-- 
+            ---116---
+            Wipping the text value once a message was successfully sent
+            And we are also going to do something similar with the sendLocation
+            It can take a sec or two for the geolocation call to actually complete.
+            We're going to se the button disabled so someone doesn't span it.
+            We're also going to update the text to say sending location so someone
+            knows that something is happening in the background.
+            Now both of this are going to change in index.js
+            -->
+            <input type="text" placeholder="Message" name="message" autofocus autocomplete="off" />
+            <button>Send</button>
+                <!-- 
+                --------114-------
+                We are going to add another button. And when the user press
+                that button we are going to use the geolocation API and usually 
+                this is going to require the user to confirm they want to share 
+                their location with this tab in the browser tat pop up box is 
+                going to happen (there is no way arround that).
+                And we're going to need to make sure that the user actually wants
+                to share their location.
+                Once we have the coordinates you're going to emit an event that's
+                going to go to server. The server is going to send it to all the 
+                users. And we are going to be able to render that information in
+                a nice link.
+                -->
+        </form>
+        <!-- -------114------- 
+        We are going to add the button outside of our form and give it an id so
+        We can easy reference it.
+        -->
+        <button id='send-location'>Send location</button>
+
+    </div>
+  </div>
+    
+
+        <!-- --119 We give our script an id and a type. The type lets your editor and
+        // the browser know what's stored inside of the script tag.
+        //Now we can write some markup inside of here and it's going to work as
+        //expected.
+        //We can go and render that over in index.js 
+        ---119b see index.js
+        Mustache lets you inject values. which means we can setup places in our 
+        template where we expect a value to get passed in. 
+        In order to provide
+        this value we hav to send in a second argument to the render method inside
+        index.js
+        -->    
+        <script id="message-template" type="text/template">
+            <li class="message">
+                <div class="message__title">
+                    <h4>{{from}}</h4>
+                    <span>{{createdAt}}</span>
+                </div>
+                <div class="message__body">
+                    <p>{{text}}</p>
+                </div>
+            </li>
+        </script>
+        
+        <script id="location-message-template" type="text/template">
+            <li class="message">
+                <div class="message__title">
+                    <h4>{{from}}</h4>
+                    <span>{{createdAt}}</span>
+                </div>
+                <div class="message__body">
+                    <p><a target="_blank" href="{{url}}">My Current Location</a></p>
+                </div>
+            </li>
+            
+        </script>        
+        
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/libs/jquery-3.3.1.min.js"></script>
+        <script src="/js/libs/moment.js"></script>
+        <script src="/js/libs/mustache.js"></script><!--- 119 -->
+        <script src="/js/libs/deparam.js"></script><!--- 122 -->
+        <script src="/js/chat.js"></script><!--- 121 -->     
+    </body>
+    <!--
+    --------113-------
+    Add a from field to you index.html
+    We are also going to add a listener in index.js that's going to wait for the form
+    to be submitted.
+    And inside of that listener listener we are going to fire socket.emit with the
+    data typed in the fields.
+    We are also going to render all incoming messages to the screen.
+    
+    To do the above we will use jQuery and be able to do that from our index.js file.
+    http://jquery.com/download/
+    and choose the compresed production version.
+    save it and add it before our index so we can use it.
+      <script src="/js/lib/jquery-3.3.1.min.js"></script>
+    
+    form is actualy going to go to a full page refresh then it's going to add to 
+    the url ?message=test we will run some javascript to prevent this default action 
+    with jquery. 
+    see also index.js
+    So we are going to attach a cutom event listener and override the 
+    default behavior. To get that done we are going to use jquery to select this 
+    form field before we dive 
+    see also index.js
+    -->
+    
+    
+    <!--
+    --------118-------
+    We want to integrade moment on the client. And to do that we need to load 
+    moment like we did with jQuery. But here we will grab the file from node_modules
+    because it is their. And we grab the moment.js file and paste it inside the
+    public/js/libs/moment.js and from here we are going to include it just like
+    jQuery.<script src="/js/libs/moment.js"></script>
+    Now we have acces to all of those moment functions inside of our client side.
+    Which means over inside index we can properly format the timestamp that comes
+    back inside of message.
+    Now if we start the server.js and go to localhost:3000 inside the console
+    we can use the moment
+    moment().format()
+    see index.js
+    -->
+    
+    
+    
+<!--  --122--
+When we are submit the from we get to the chat page but we dont do anything 
+with the data passed from the form.
+The goal is to take them pass them to the sever so the sever can keep track of 
+who is in which room. And we can set that private configuration
+
+The first step in getting this data to the server is figuring out where that data
+live. This actualy lives in the location object. Location is a global object and
+is provided by your browser.
+In the browser in the console tab if we write 
+
+>location
+and run it. We have a lot of stuff like host,hostname,...etc. The one we are 
+intrested of is search which is the query string. But to be sure its better to 
+access it like that
+>window.location.search
+
+Adding window infront just to make sure we're accessing the global location 
+property as opposed to a local variable which may or may not exist called location.
+
+With jQuery we have access to a function jQuery.param() that we can pass in 
+an object and it converts it into a query string so we can add it to a url.
+>jQuery.param({name:'alex', age:25});<- - ->"name=alex&age=25"
+
+Now the problem is that it can not do it the other direction. Meaning it cannot
+take this strin 'name=alex&age=25' and convert it into an object.
+
+In order to do that we are going to use a plugin called deparams if you search 
+for:
+links.mead.io/deparam
+https://gist.github.com/andrewjmead/b71e03d8df237983285892f9a265d401
+select raw and save it in public/js/libs/deparam.js
+include it in chat.html we are not going to need it in index
+<script src="/js/libs/deparam.js"></script>
+
+Now that we include it. We can go and play whit this in the console tab.
+In our browser in console tab we have access to jQuery.deparam
+>jQuery.deparam
+
+If we run the above statement we're going to get our function back confirming
+that it does exist.
+And all we need to do is pass in a string.(the searchstring)
+Which in our case is in window.location.search
+
+>jQuery.deparam(window.location.search);
+
+So we are taking this object we are passing it to deparam and the result is an 
+object exactly what we want. All the special characters are converted.
+This is what we are going to use inside of our client side code to get the 
+values and pass them to the server. This is all going to happend inside of 
+chat.js
+-->
+    
+    
+    
+</html>
+    
